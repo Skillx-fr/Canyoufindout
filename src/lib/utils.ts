@@ -33,6 +33,8 @@ export function normalizeUrl(input: string): string {
     return input;
 }
 
+import psl from 'psl';
+
 /**
  * Extrait le hostname d'une URL pour l'affichage ou le scan.
  */
@@ -43,4 +45,15 @@ export function extractHostname(url: string): string {
     } catch {
         return '';
     }
+}
+
+/**
+ * Extrait le domaine racine (eTLD+1) pour les requêtes WHOIS.
+ * Ex: platform.leakmited.com -> leakmited.com
+ */
+export function getRootDomain(hostname: string): string {
+    const parsed = psl.parse(hostname);
+    if (parsed.error) return hostname;
+    // psl.parse retourne une union, on check si 'domain' existe
+    return (parsed as any).domain || hostname;
 }

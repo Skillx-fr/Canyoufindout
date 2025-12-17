@@ -1,10 +1,12 @@
 import { NextResponse } from 'next/server';
 import * as whoiserLib from 'whoiser';
-// Récupération explicite de la fonction whoisDomain
-const whoisDomain = (whoiserLib as any).whoisDomain || whoiserLib;
 import { rateLimit } from '@/lib/rate-limit';
-import { isValidUrl, normalizeUrl, extractHostname } from '@/lib/utils';
+import { isValidUrl, normalizeUrl, extractHostname, getRootDomain } from '@/lib/utils';
 import { logger } from '@/lib/logger';
+
+// Récupération explicite de la fonction whoisDomain
+// Gestion compatibilité CommonJS/ESM
+const whoisDomain = (whoiserLib as any).whoisDomain || whoiserLib;
 
 // Rate Limited mais un peu plus strict car WHOIS est lent/sensible
 const limiter = rateLimit({
@@ -35,19 +37,18 @@ export async function POST(request: Request) {
         }
 
         const hostname = extractHostname(normalizedUrl);
-        logger.info('Scan WHOIS initié', { hostname, ip });
+        // Pour WHOIS, on doit utiliser le domaine racine (ex: leakmited.com au lieu de platform.leakmited.com)
+        const rootDomain = getRootDomain(hostname);
 
-        // Exécution du WHOIS (whoisDomain)
-        const whoisResult = await whoisDomain(hostname);
+        logger.info('Scan WHOIS initié', { hostname, rootDomain, ip });
 
-        // On retourne tout le résultat pour le frontend
-
-        // Petit nettoyage pour s'assurer que c'est sérialisable
-        const cleanResult = JSON.parse(JSON.stringify(whoisResult));
+        // Exécution du WHOIS (whoisDomain) sur le rootDomain
+        const whoisResult = await whoisDomain(rootDomain);
 
         return NextResponse.json({
-            hostname,
-            data: cleanResult
+            hostname, // On renvoie le hostname original pour le contexte
+            rootDomain,
+            data: JSON.parse(JSON.stringify(whoisResult))
         });
 
     } catch (error) {

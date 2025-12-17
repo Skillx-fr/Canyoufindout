@@ -2,9 +2,9 @@ const whoiser = require('whoiser');
 
 (async () => {
     try {
-        console.log("Test WHOIS (whoisDomain) sur google.com...");
+        console.log("Test WHOIS (whoisDomain) sur platform.leakmited.com...");
         // Utilisation explicite de whoisDomain
-        const res = await whoiser.whoisDomain('google.com');
+        const res = await whoiser.whoisDomain('platform.leakmited.com');
 
         // Structure top-level
         console.log('Keys:', Object.keys(res));

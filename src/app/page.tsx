@@ -127,6 +127,11 @@ export default function Home() {
           </div>
         </div>
       )}
+
+      {/* Footer Version */}
+      <footer className="fixed bottom-0 left-0 w-full p-2 text-center text-xs text-gray-600 bg-black/40 backdrop-blur-sm border-t border-white/5">
+        <p>ReconSight v0.1.1 • Skillx.fr • © {new Date().getFullYear()}</p>
+      </footer>
     </main>
   );
 }

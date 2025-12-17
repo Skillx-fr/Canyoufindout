@@ -129,8 +129,16 @@ export default function Home() {
       )}
 
       {/* Footer Version */}
-      <footer className="fixed bottom-0 left-0 w-full p-2 text-center text-xs text-gray-600 bg-black/40 backdrop-blur-sm border-t border-white/5">
-        <p>ReconSight v0.1.1 • Skillx.fr • © {new Date().getFullYear()}</p>
+      <footer className="fixed bottom-0 left-0 w-full p-3 text-center text-xs text-gray-500 bg-black/60 backdrop-blur-md border-t border-white/5 flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6">
+        <span>
+          Propulsé par <a href="https://skillx.fr" target="_blank" rel="noopener noreferrer" className="text-[#445dea] hover:text-[#5b73ff] font-medium transition-colors">Skillx.fr</a>
+        </span>
+        <span className="hidden md:inline">•</span>
+        <span>
+          Code Source sur <a href="https://github.com/Skillx-fr/Canyoufindout" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors underline decoration-white/20 hover:decoration-white/50">GitHub</a>
+        </span>
+        <span className="hidden md:inline">•</span>
+        <span className="opacity-60">v0.1.1</span>
       </footer>
     </main>
   );

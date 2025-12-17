@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import * as whoiserLib from 'whoiser';
-// Gestion compatibilité CommonJS/ESM
-const whoiser = (whoiserLib as any).default || whoiserLib;
+// Récupération explicite de la fonction whoisDomain
+const whoisDomain = (whoiserLib as any).whoisDomain || whoiserLib;
 import { rateLimit } from '@/lib/rate-limit';
 import { isValidUrl, normalizeUrl, extractHostname } from '@/lib/utils';
 import { logger } from '@/lib/logger';
@@ -37,14 +37,10 @@ export async function POST(request: Request) {
         const hostname = extractHostname(normalizedUrl);
         logger.info('Scan WHOIS initié', { hostname, ip });
 
-        // Exécution du WHOIS
-        // whoiser retourne un objet avec les serveurs interrogés (ex: "whois.verisign-grs.com": {...})
-        const whoisResult = await whoiser(hostname);
+        // Exécution du WHOIS (whoisDomain)
+        const whoisResult = await whoisDomain(hostname);
 
-        // On essaie de normaliser un peu la sortie pour le frontend, 
-        // ou on renvoie tout et le frontend affichera le premier résultat pertinent.
-        // whoiser retourne souvent plusieurs clés (TLD whois, Registrar whois).
-        // On va tout renvoyer, le frontend filtrera.
+        // On retourne tout le résultat pour le frontend
 
         // Petit nettoyage pour s'assurer que c'est sérialisable
         const cleanResult = JSON.parse(JSON.stringify(whoisResult));

@@ -44,21 +44,32 @@ export function WhoisResult({ data, loading, error }: WhoisResultProps) {
 }
 
 function extractWhoisData(whoisData: any) {
-    // Tentative d'extraire les champs communs de whoiser
     if (!whoisData) return null;
 
-    // On cherche le premier objet qui ressemble à des données de registrar
-    const relevantKeys = Object.keys(whoisData).filter(k => k.includes('.'));
-    if (relevantKeys.length === 0) return null; // Pas de TLD match ?
+    // On cherche les clés qui contiennent des données pertinentes (souvent le nom de domaine DNS)
+    // On priorise les objets qui ont 'Registrar', ou on merge tout.
+    let mergedData: any = {};
+    const keys = Object.keys(whoisData);
 
-    const record = whoisData[relevantKeys[0]];
+    for (const key of keys) {
+        const record = whoisData[key];
+        if (typeof record === 'object' && record !== null) {
+            // On merge les champs intéressants
+            mergedData = { ...mergedData, ...record };
+        }
+    }
+
+    // Nettoyage des clés redondantes ou techniques
+    if (Object.keys(mergedData).length === 0) return null;
 
     return {
-        'Registrar': record['Registrar'] || record['registrar'],
-        'Updated Date': record['Updated Date'] || record['updatedDate'],
-        'Creation Date': record['Creation Date'] || record['creationDate'],
-        'Registry Expiry Date': record['Registry Expiry Date'] || record['registryExpiryDate'],
-        'Organization': record['Registrant Organization'] || record['registrantOrganization'] || 'Masqué',
+        'Registrar': mergedData['Registrar'] || mergedData['registrar'],
+        'Updated Date': mergedData['Updated Date'] || mergedData['updatedDate'],
+        'Creation Date': mergedData['Created Date'] || mergedData['createdDate'] || mergedData['Creation Date'],
+        'Registry Expiry Date': mergedData['Registry Expiry Date'] || mergedData['registryExpiryDate'] || mergedData['Expiry Date'],
+        'Organization': mergedData['Registrant Organization'] || mergedData['registrantOrganization'] || 'Masqué',
+        'Name Servers': mergedData['Name Server'] || mergedData['nameServer'],
+        'Status': mergedData['Domain Status'] || mergedData['domainStatus']
     };
 }
 

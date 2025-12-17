@@ -79,11 +79,11 @@ export default function Home() {
       {/* Header Héroïque */}
       <div className="text-center space-y-6 pt-12 md:pt-20">
         <div className="flex justify-center mb-6">
-          <div className="p-4 rounded-full bg-blue-500/10 border border-blue-500/20 shadow-[0_0_50px_-10px_rgba(59,130,246,0.3)] animate-pulse-slow">
-            <Radar className="w-16 h-16 text-blue-400" />
+          <div className="p-4 rounded-full bg-[#445dea]/10 border border-[#445dea]/20 shadow-[0_0_50px_-10px_rgba(68,93,234,0.3)] animate-pulse-slow">
+            <Radar className="w-16 h-16 text-[#445dea]" />
           </div>
         </div>
-        <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 tracking-tight">
+        <h1 className="text-4xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-[#445dea] via-purple-400 to-pink-400 tracking-tight">
           ReconSight
         </h1>
         <p className="text-gray-400 max-w-xl mx-auto text-lg md:text-xl font-light">
@@ -99,12 +99,12 @@ export default function Home() {
             value={url}
             onChange={(e) => setUrl(e.target.value)}
             placeholder="exemple.com ou https://site.com"
-            className="h-16 pl-6 pr-36 text-lg rounded-xl border-white/10 bg-black/60 focus:ring-blue-500/40 focus:border-blue-500/40"
+            className="h-16 pl-6 pr-36 text-lg rounded-xl border-white/10 bg-black/60 focus:ring-[#445dea]/40 focus:border-[#445dea]/40"
           />
           <Button
             type="submit"
             disabled={globalStatus === 'loading' || !url}
-            className="absolute right-2 h-12 px-8 rounded-lg bg-blue-600 hover:bg-blue-500 text-white font-semibold shadow-lg shadow-blue-600/20 transition-all"
+            className="absolute right-2 h-12 px-8 rounded-lg bg-[#445dea] hover:bg-[#3b50ce] text-white font-semibold shadow-lg shadow-[#445dea]/20 transition-all"
           >
             {globalStatus === 'loading' ? 'Scan...' : 'Scanner'}
           </Button>

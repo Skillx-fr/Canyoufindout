@@ -8,6 +8,20 @@ interface HeadersResultProps {
     error: any;
 }
 
+import { LabelWithTooltip } from "@/components/ui/label-with-tooltip";
+
+// Définitions des tooltips pour les headers
+const HEADER_TOOLTIPS: Record<string, string> = {
+    'HSTS': 'HTTP Strict Transport Security. Force le navigateur à utiliser uniquement des connexions HTTPS sécurisées.',
+    'CSP': 'Content Security Policy. Définit quelles ressources (scripts, images, etc.) sont autorisées à charger pour prévenir les attaques XSS.',
+    'X-Frame-Options': 'Empêche le site d\'être affiché dans une iframe, protégeant contre les attaques de type Clickjacking.',
+    'X-Content-Type-Options': 'Empêche le navigateur de deviner le type de fichier (MIME sniffing), réduisant les risques d\'exécution de scripts malveillants.',
+    'Referrer-Policy': 'Contrôle la quantité d\'informations de navigation envoyées avec les requêtes (Referer header).',
+    'Permissions-Policy': 'Définit quelles fonctionnalités du navigateur (caméra, micro, géoloc) le site a le droit d\'utiliser.',
+    'Server': 'Divulgation du logiciel serveur (Information Disclosure). Masquer cette information complique la reconnaissance pour les attaquants.',
+    'X-Powered-By': 'Indique la technologie utilisée (ex: Express, PHP, ASP.NET). À masquer pour éviter de faciliter le ciblage d\'exploits.',
+};
+
 export function HeadersResult({ data, loading, error }: HeadersResultProps) {
     if (loading) return <CardLoading title="Sécurité HTTP" />;
     if (error) return <CardError title="Sécurité HTTP" message={error} />;
@@ -23,17 +37,20 @@ export function HeadersResult({ data, loading, error }: HeadersResultProps) {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div className="space-y-2">
-                    {data.securityAnalysis.map((check: any, idx: number) => (
-                        <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
-                            <div className="flex items-center gap-3">
-                                <StatusIcon status={check.status} />
-                                <span className="text-sm font-medium text-gray-200">{check.header}</span>
+                    {data.securityAnalysis.map((check: any, idx: number) => {
+                        const tooltip = HEADER_TOOLTIPS[check.header] || `Analyse de l'en-tête ${check.header}`;
+                        return (
+                            <div key={idx} className="flex items-center justify-between p-2 rounded-lg bg-white/5 border border-white/5 hover:bg-white/10 transition-colors">
+                                <div className="flex items-center gap-3">
+                                    <StatusIcon status={check.status} />
+                                    <LabelWithTooltip label={check.header} tooltip={tooltip} />
+                                </div>
+                                <div className="text-xs text-gray-400 text-right">
+                                    {check.status === 'present' ? <span className="text-green-400/80">Activé</span> : check.message}
+                                </div>
                             </div>
-                            <div className="text-xs text-gray-400 text-right">
-                                {check.status === 'present' ? <span className="text-green-400/80">Activé</span> : check.message}
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* Toggle details could be added here, showing raw headers always for now */}

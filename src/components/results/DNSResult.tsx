@@ -7,6 +7,19 @@ interface DNSResultProps {
     error: any;
 }
 
+import { LabelWithTooltip } from "@/components/ui/label-with-tooltip";
+
+// Définitions des tooltips DNS
+const DNS_TOOLTIPS: Record<string, string> = {
+    'A': 'Address Record. Associe un nom de domaine à une adresse IPv4 (ex: 192.168.1.1).',
+    'AAAA': 'IPv6 Address Record. Associe un nom de domaine à une adresse IPv6 (ex: 2001:db8::1).',
+    'MX': 'Mail Exchange Record. Indique les serveurs de messagerie responsables de la réception des emails pour ce domaine.',
+    'TXT': 'Text Record. Permet d\'ajouter du texte arbitraire (souvent utilisé pour SPF, DKIM, ou validations de propriété Google/Microsoft).',
+    'NS': 'Name Server Record. Indique quels serveurs DNS sont autoritaires et gèrent la zone de ce domaine.',
+    'CNAME': 'Canonical Name Record. Alias pointant vers un autre nom de domaine.',
+    'SOA': 'Start of Authority. Informations administratives sur la zone DNS (contact admin, délais de rafraîchissement...).',
+};
+
 export function DNSResult({ data, loading, error }: DNSResultProps) {
     if (loading) return <CardLoading title="DNS Records" />;
     if (error) return <CardError title="DNS Records" message={error} />;
@@ -23,7 +36,13 @@ export function DNSResult({ data, loading, error }: DNSResultProps) {
             <CardContent className="space-y-4">
                 {Object.entries(data.records || {}).map(([type, records]: [string, any]) => (
                     <div key={type} className="border-b border-white/5 pb-2 last:border-0 last:pb-0">
-                        <h4 className="font-semibold text-blue-300 text-sm mb-1">{type}</h4>
+                        <div className="mb-1">
+                            <LabelWithTooltip
+                                label={type}
+                                tooltip={DNS_TOOLTIPS[type] || `Enregistrement DNS de type ${type}`}
+                                className="text-blue-300 text-sm"
+                            />
+                        </div>
                         {records.length > 0 ? (
                             <ul className="space-y-1 text-sm text-gray-300">
                                 {records.map((rec: any, idx: number) => (

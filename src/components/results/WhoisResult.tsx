@@ -1,5 +1,16 @@
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Loader2, Fingerprint, AlertCircle } from "lucide-react";
+import { LabelWithTooltip } from "@/components/ui/label-with-tooltip";
+
+const WHOIS_TOOLTIPS: Record<string, string> = {
+    'Registrar': 'L\'entreprise accréditée (ex: GoDaddy, OVH) auprès de qui le nom de domaine a été réservé.',
+    'Updated Date': 'La date de la dernière modification apportée aux informations du domaine.',
+    'Creation Date': 'La date à laquelle le nom de domaine a été enregistré pour la première fois.',
+    'Registry Expiry Date': 'La date à laquelle le domaine expirera s\'il n\'est pas renouvelé.',
+    'Organization': 'L\'entité propriétaire du domaine (souvent masquée par "Privacy Guard" pour les particuliers).',
+    'Name Servers': 'La liste des serveurs de noms déclarés auprès du registrar.',
+    'Status': 'Le code EPP indiquant l\'état du domaine (ex: clientTransferProhibited empêche le transfert non autorisé).',
+};
 
 interface WhoisResultProps {
     data: any;
@@ -15,6 +26,8 @@ export function WhoisResult({ data, loading, error }: WhoisResultProps) {
     // Extraction simplifiée des données pertinentes
     const displayData = extractWhoisData(data.data);
 
+    // ...
+
     return (
         <Card>
             <CardHeader>
@@ -28,7 +41,11 @@ export function WhoisResult({ data, loading, error }: WhoisResultProps) {
                     <div className="grid grid-cols-1 gap-2 text-sm">
                         {Object.entries(displayData).map(([key, value]) => (
                             <div key={key} className="flex justify-between border-b border-white/5 pb-1">
-                                <span className="text-gray-400">{key}:</span>
+                                <LabelWithTooltip
+                                    label={key}
+                                    tooltip={WHOIS_TOOLTIPS[key] || `Information WHOIS : ${key}`}
+                                    className="text-gray-400"
+                                />
                                 <span className="text-gray-200 font-mono text-right">{String(value)}</span>
                             </div>
                         ))}
